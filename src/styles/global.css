@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-velada-gold: #d4a853;
+  --color-velada-gold-light: #e8c97a;
+  --color-velada-red: #dc2626;
+  --color-velada-dark: #09090b;
+  --color-velada-surface: #18181b;
+  --color-velada-border: #27272a;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Bebas Neue", "Inter", system-ui, sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--color-velada-gold);
+  color: var(--color-velada-dark);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-velada-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-velada-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-velada-gold);
+}

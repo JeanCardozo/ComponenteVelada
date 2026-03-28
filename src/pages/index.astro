@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <main class="relative">
+    <!-- Hero Section -->
+    <section
+      class="flex flex-col items-center justify-center min-h-screen px-4 text-center"
+    >
+      <h1
+        class="font-display text-6xl sm:text-8xl md:text-9xl tracking-tight text-velada-gold uppercase"
+      >
+        La Velada
+        <span class="block text-white">VI</span>
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-zinc-400 max-w-2xl">
+        El mayor evento de boxeo y entretenimiento. Pronto más información.
+      </p>
+      <div class="mt-10">
+        <a
+          href="#info"
+          class="inline-flex items-center gap-2 px-8 py-3 bg-velada-gold text-velada-dark font-bold rounded-full hover:bg-velada-gold-light transition-colors duration-300"
+        >
+          Descubre más
+        </a>
+      </div>
+    </section>
+
+    <!-- Info Section placeholder -->
+    <section id="info" class="py-24 px-4 max-w-6xl mx-auto">
+      <h2 class="font-display text-4xl sm:text-5xl text-velada-gold text-center uppercase">
+        Próximamente
+      </h2>
+      <p class="mt-4 text-zinc-400 text-center max-w-xl mx-auto">
+        Combates, artistas, fecha y lugar. Todo será revelado pronto.
+      </p>
+    </section>
+  </main>
+</Layout>
