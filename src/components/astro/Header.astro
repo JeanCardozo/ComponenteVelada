@@ -31,7 +31,7 @@ const navLinks = [
 
 <header
   id="main-header"
-  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  class="fixed top-0 left-0 right-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-300"
 >
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
     <!-- Logo / Nombre -->
@@ -86,39 +86,76 @@ const navLinks = [
   </div>
 </header>
 
-<!--
-  Script inline de Astro — NO es React, es vanilla JS.
-  Se ejecuta una sola vez cuando la página carga.
-  Dos responsabilidades:
-  1. Backdrop blur al hacer scroll (como el repo oficial)
-  2. Toggle del menú mobile
--->
+
+
 <script>
-  const header = document.getElementById("main-header");
-  const menuBtn = document.getElementById("mobile-menu-btn");
-  const mobileMenu = document.getElementById("mobile-menu");
+  function initHeader() {
+    const header = document.getElementById("main-header");
+    const menuBtn = document.getElementById("mobile-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
 
-  // Backdrop blur al hacer scroll (igual que el repo oficial a 250px)
-  window.addEventListener("scroll", () => {
     if (!header) return;
-    if (window.scrollY > 100) {
-      header.classList.add("bg-velada-dark/90", "backdrop-blur-xl", "border-b", "border-velada-border");
-    } else {
-      header.classList.remove("bg-velada-dark/90", "backdrop-blur-xl", "border-b", "border-velada-border");
+
+
+    function onScroll() {
+      const isScrolled = window.scrollY > 50;
+      const wasScrolled = header?.dataset.scrolled === "true";
+
+      // Solo manipular el DOM si el estado CAMBIÓ
+      if (isScrolled === wasScrolled) return;
+
+      header.dataset.scrolled = String(isScrolled);
+
+      if (isScrolled) {
+        header?.classList.add("bg-velada-dark/90", "backdrop-blur-xl", "border-velada-border");
+      } else {
+        header?.classList.remove("bg-velada-dark/90", "backdrop-blur-xl", "border-velada-border");
+      }
     }
-  });
 
-  // Toggle menú mobile
-  menuBtn?.addEventListener("click", () => {
-    const isOpen = mobileMenu?.classList.toggle("hidden") === false;
-    menuBtn.setAttribute("aria-expanded", String(isOpen));
-  });
+    // Ejecutar inmediatamente (por si la página carga ya scrolleada)
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-  // Cerrar menú al clickar un link
-  mobileMenu?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.add("hidden");
-      menuBtn?.setAttribute("aria-expanded", "false");
+    // Toggle menú mobile
+    menuBtn?.addEventListener("click", () => {
+      const isOpen = mobileMenu?.classList.toggle("hidden") === false;
+      menuBtn.setAttribute("aria-expanded", String(isOpen));
     });
-  });
+
+    // Cerrar menú al clickar un link
+    mobileMenu?.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden");
+        menuBtn?.setAttribute("aria-expanded", "false");
+      });
+    });
+
+
+    document.querySelectorAll('a[href^="/#"], a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", (e) => {
+        const href = anchor.getAttribute("href") || "";
+        const hash = href.includes("#") ? href.substring(href.indexOf("#")) : "";
+        const target = hash ? document.querySelector(hash) : null;
+
+        if (target) {
+          e.preventDefault();
+
+          // Respetar prefers-reduced-motion
+          const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+          target.scrollIntoView({
+            behavior: prefersReducedMotion ? "instant" : "smooth",
+            block: "start",
+          });
+
+          // Actualizar URL sin recargar (para que el historial funcione)
+          history.pushState(null, "", hash);
+        }
+      });
+    });
+  }
+
+  // astro:page-load se dispara en la carga inicial Y después de cada View Transition
+  document.addEventListener("astro:page-load", initHeader);
 </script>
