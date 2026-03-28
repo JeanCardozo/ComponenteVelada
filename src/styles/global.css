@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Fuentes self-hosted (mejor que Google Fonts CDN para LCP) */
+@import "@fontsource-variable/inter";
+@import "@fontsource/cinzel/400.css";
+@import "@fontsource/cinzel/700.css";
+@import "@fontsource/cinzel/900.css";
+
 @theme {
   --color-velada-gold: #d4a853;
   --color-velada-gold-light: #e8c97a;
@@ -8,8 +14,8 @@
   --color-velada-surface: #18181b;
   --color-velada-border: #27272a;
 
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Bebas Neue", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-display: "Cinzel", Georgia, serif;
 }
 
 /* Smooth scrolling */

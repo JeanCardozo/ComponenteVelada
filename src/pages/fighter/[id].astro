@@ -1,0 +1,166 @@
+---
+/**
+ * RUTA DINÁMICA: /fighter/[id]
+ *
+ * El [id] en el nombre del archivo es como un "placeholder".
+ * Astro reemplaza [id] con cada valor que devuelve getStaticPaths().
+ *
+ * Ejemplo: si getStaticPaths() devuelve { params: { id: "illojuan" } }
+ * → Astro genera /fighter/illojuan.html
+ *
+ * IMPORTANTE (SSG vs SSR):
+ * Como usamos output: "static", DEBEMOS exportar getStaticPaths().
+ * Esto le dice a Astro: "genera estas páginas en build time".
+ *
+ * Si usáramos SSR, NO necesitaríamos getStaticPaths() porque
+ * la página se generaría en cada petición. Pero perdemos la velocidad
+ * de tener HTML pre-generado.
+ *
+ * En el repo oficial, las rutas dinámicas funcionan igual,
+ * pero con SSR el servidor procesa cada petición.
+ */
+
+import Layout from "@/layouts/Layout.astro";
+import { getAllFighters, getFighterById, getOpponent } from "@lib/fighters";
+import type { Fighter } from "@types/index";
+
+// getStaticPaths() genera una página por cada boxeador en build time
+export function getStaticPaths() {
+  const fighters = getAllFighters();
+
+  return fighters.map((fighter) => ({
+    params: { id: fighter.id },
+    props: { fighter },
+  }));
+}
+
+// Props tipadas: Astro inyecta el fighter que corresponde a esta página
+const { fighter } = Astro.props as { fighter: Fighter };
+const opponent = getOpponent(fighter);
+
+// Mapa de códigos de país a emojis de bandera
+const countryFlags: Record<string, string> = {
+  ES: "\u{1F1EA}\u{1F1F8}",
+  AR: "\u{1F1E6}\u{1F1F7}",
+  MX: "\u{1F1F2}\u{1F1FD}",
+  CO: "\u{1F1E8}\u{1F1F4}",
+  SV: "\u{1F1F8}\u{1F1FB}",
+};
+---
+
+<Layout
+  title={`${fighter.alias} | La Velada VI`}
+  description={`Perfil de ${fighter.alias} (${fighter.name}) - Boxeador de La Velada VI`}
+>
+  <main class="max-w-4xl mx-auto px-4 py-16">
+    <!-- Botón de volver -->
+    <a
+      href="/"
+      class="inline-flex items-center gap-2 text-zinc-400 hover:text-velada-gold transition-colors mb-8"
+    >
+      <span>&larr;</span> Volver a la cartelera
+    </a>
+
+    <article class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+      <!-- Imagen del boxeador -->
+      <div class="aspect-[3/4] overflow-hidden rounded-2xl border border-velada-border bg-velada-surface">
+        <!--
+          Por ahora usamos un placeholder con las iniciales.
+          En Phase 5 usaremos <Image /> de astro:assets para optimización.
+          El repo oficial usa imágenes reales con blur placeholders.
+        -->
+        <div class="w-full h-full flex items-center justify-center bg-gradient-to-b from-velada-surface to-velada-dark">
+          <span class="font-display text-8xl text-velada-gold/30">
+            {fighter.alias.charAt(0)}
+          </span>
+        </div>
+      </div>
+
+      <!-- Información -->
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-3xl">{countryFlags[fighter.country] || fighter.country}</span>
+          <span class="px-3 py-1 text-xs font-bold uppercase rounded-full bg-velada-gold/10 text-velada-gold border border-velada-gold/20">
+            {fighter.gender === "masculino" ? "Masculino" : "Femenino"}
+          </span>
+        </div>
+
+        <h1 class="font-display text-5xl md:text-6xl text-velada-gold uppercase mt-4">
+          {fighter.alias}
+        </h1>
+
+        <p class="text-xl text-zinc-400 mt-2">{fighter.name}</p>
+
+        <!-- VS Oponente -->
+        {opponent && (
+          <div class="mt-8 p-6 rounded-xl border border-velada-border bg-velada-surface/50">
+            <p class="text-sm text-zinc-500 uppercase tracking-wider mb-2">Se enfrenta a</p>
+            <a
+              href={`/fighter/${opponent.id}`}
+              class="text-2xl font-display text-white hover:text-velada-gold transition-colors uppercase"
+            >
+              {opponent.alias} {countryFlags[opponent.country] || ""}
+            </a>
+          </div>
+        )}
+
+        <!-- Redes Sociales -->
+        <div class="mt-8">
+          <h2 class="text-sm text-zinc-500 uppercase tracking-wider mb-4">Redes Sociales</h2>
+          <div class="flex flex-wrap gap-3">
+            {fighter.socials.twitch && (
+              <a
+                href={fighter.socials.twitch}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition-colors text-sm"
+              >
+                Twitch
+              </a>
+            )}
+            {fighter.socials.youtube && (
+              <a
+                href={fighter.socials.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors text-sm"
+              >
+                YouTube
+              </a>
+            )}
+            {fighter.socials.twitter && (
+              <a
+                href={fighter.socials.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500/20 transition-colors text-sm"
+              >
+                Twitter/X
+              </a>
+            )}
+            {fighter.socials.instagram && (
+              <a
+                href={fighter.socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20 hover:bg-pink-500/20 transition-colors text-sm"
+              >
+                Instagram
+              </a>
+            )}
+            {fighter.socials.tiktok && (
+              <a
+                href={fighter.socials.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 rounded-lg bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 hover:bg-zinc-500/20 transition-colors text-sm"
+              >
+                TikTok
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+</Layout>

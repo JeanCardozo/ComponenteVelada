@@ -42,10 +42,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
 
-    <!-- Preload critical fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
+    <!-- Fuentes self-hosted via @fontsource (no necesitamos CDN externo) -->
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="bg-zinc-950 text-white min-h-screen antialiased">
