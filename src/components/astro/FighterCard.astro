@@ -46,7 +46,16 @@ const flags: Record<string, string> = {
 };
 ---
 
-<article class="group relative overflow-hidden rounded-xl border border-velada-border bg-velada-surface transition-all duration-500 hover:border-velada-gold/30 hover:shadow-[0_0_30px_rgba(212,168,83,0.15)]">
+<!--
+  transition:name={`fighter-${fighter?.id}`}
+  Esto conecta este elemento con el mismo transition:name en la página de detalle.
+  Cuando haces click, Astro anima ESTE card transformándose en la página [id].astro.
+  Es como la animación "hero" de las apps nativas.
+-->
+<article
+  transition:name={`fighter-${fighter?.id}`}
+  class="group relative overflow-hidden rounded-xl border border-velada-border bg-velada-surface transition-all duration-500 hover:border-velada-gold/30 hover:shadow-[0_0_30px_rgba(212,168,83,0.15)]"
+>
   <!--
     Imagen con efecto grayscale.
     aspect-[3/4]: proporción de póster de boxeo (vertical).
@@ -55,7 +64,7 @@ const flags: Record<string, string> = {
   <div class="aspect-[3/4] overflow-hidden bg-gradient-to-b from-velada-surface to-velada-dark">
     <div class="w-full h-full flex items-center justify-center grayscale transition-all duration-500 group-hover:grayscale-0">
       <span class="font-display text-7xl text-velada-gold/20 group-hover:text-velada-gold/40 transition-colors duration-500 select-none">
-        {fighter.alias.split(" ").map(w => w[0]).join("")}
+        {fighter?.alias?.split(" ").map(w => w[0]).join("")}
       </span>
     </div>
   </div>
@@ -64,13 +73,13 @@ const flags: Record<string, string> = {
   <div class="p-4">
     <div class="flex items-center justify-between">
       <h3 class="font-display text-lg text-velada-gold uppercase truncate">
-        {fighter.alias}
+        {fighter?.alias}
       </h3>
-      <span class="text-lg" title={fighter.country}>
-        {flags[fighter.country] || fighter.country}
+      <span class="text-lg" title={fighter?.country}>
+        {flags[fighter?.country] || fighter?.country}
       </span>
     </div>
-    <p class="text-sm text-zinc-500 truncate">{fighter.name}</p>
+    <p class="text-sm text-zinc-500 truncate">{fighter?.name}</p>
   </div>
 
   <!--
@@ -82,9 +91,9 @@ const flags: Record<string, string> = {
     3. Los lectores de pantalla lo anuncian correctamente
   -->
   <a
-    href={`/fighter/${fighter.id}`}
+    href={`/fighter/${fighter?.id}`}
     class="absolute inset-0"
-    aria-label={`Ver perfil de ${fighter.alias}`}
+    aria-label={`Ver perfil de ${fighter?.alias}`}
   >
   </a>
 </article>

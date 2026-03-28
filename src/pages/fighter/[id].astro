@@ -61,7 +61,12 @@ const countryFlags: Record<string, string> = {
       <span>&larr;</span> Volver a la cartelera
     </a>
 
-    <article class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+    <!--
+      transition:name debe coincidir con el del FighterCard.
+      Cuando navegas de la home a esta página, Astro anima
+      el card "convirtiéndose" en este article. Magia visual.
+    -->
+    <article transition:name={`fighter-${fighter.id}`} class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
       <!-- Imagen del boxeador -->
       <div class="aspect-[3/4] overflow-hidden rounded-2xl border border-velada-border bg-velada-surface">
         <!--

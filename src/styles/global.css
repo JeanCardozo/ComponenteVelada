@@ -6,6 +6,9 @@
 @import "@fontsource/cinzel/700.css";
 @import "@fontsource/cinzel/900.css";
 
+/* Animaciones personalizadas */
+@import "./animations.css";
+
 @theme {
   --color-velada-gold: #d4a853;
   --color-velada-gold-light: #e8c97a;

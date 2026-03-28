@@ -1,62 +1,79 @@
 ---
 /**
- * Sección Hero — La primera impresión del usuario.
+ * Sección Hero — Mejorada con animaciones y efectos avanzados.
  *
- * CONCEPTO: ¿Qué es una "sección" vs un "componente"?
+ * MEJORAS EN PHASE 4:
+ * 1. Animaciones de entrada escalonadas (staggered fade-in)
+ * 2. Glow pulsante en el CTA principal
+ * 3. Textura de ruido (grain) para profundidad visual
+ * 4. Múltiples capas de gradiente (layered backgrounds)
  *
- * - Componente (src/components/): pieza reutilizable (FighterCard, Button)
- * - Sección (src/sections/): bloque de página que COMPONE componentes
+ * CONCEPTO: Layered Backgrounds (fondos en capas)
+ * En vez de un solo gradiente, usamos VARIAS capas:
+ * - Capa 1: gradiente base (dark → surface → dark)
+ * - Capa 2: glow dorado borroso (blur)
+ * - Capa 3: glow rojo sutil (para "agresividad" deportiva)
+ * - Capa 4: ruido/grain para textura
  *
- * El Hero es una SECCIÓN porque:
- * 1. Solo aparece una vez (en la home)
- * 2. Compone múltiples elementos (título, subtítulo, countdown, CTA)
- * 3. Define el layout de una parte de la página
- *
- * En el repo oficial, src/sections/Hero.astro tiene 12.5KB
- * e incluye un selector de boxeadores. Nosotros empezamos simple
- * y podemos añadir complejidad después.
- *
- * PERFORMANCE TIP:
- * El Hero es lo primero que el usuario ve. Todo aquí debe ser
- * HTML puro (sin JavaScript) para un LCP (Largest Contentful Paint) rápido.
- * El Countdown (React) lo añadiremos con client:visible después.
+ * Cada capa es un div posicionado con absolute.
+ * El contenido va encima con relative z-10.
  */
 ---
 
 <section class="relative flex flex-col items-center justify-center min-h-screen px-4 text-center overflow-hidden">
-  <!--
-    Gradiente de fondo — puro CSS, sin imágenes.
-    Esto carga instantáneamente (vs una imagen que tarda en descargar).
-    El repo oficial usa gradientes similares con overlays.
-  -->
+  <!-- Capa 1: Gradiente base -->
   <div class="absolute inset-0 bg-gradient-to-b from-velada-dark via-velada-surface/20 to-velada-dark"></div>
 
-  <!-- Efecto de brillo dorado detrás del título -->
+  <!-- Capa 2: Glow dorado central -->
   <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-velada-gold/5 rounded-full blur-[120px]"></div>
 
-  <!-- Contenido -->
+  <!-- Capa 3: Glow rojo sutil (toque deportivo/agresivo) -->
+  <div class="absolute top-1/2 right-0 w-[300px] h-[300px] bg-velada-red/5 rounded-full blur-[100px]"></div>
+
+  <!-- Capa 4: Líneas decorativas -->
+  <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(212,168,83,0.3) 1px, transparent 1px); background-size: 100% 80px;"></div>
+
+  <!-- Contenido con animaciones de entrada -->
   <div class="relative z-10">
-    <!-- Fecha del evento -->
-    <p class="text-sm sm:text-base uppercase tracking-[0.3em] text-velada-gold/70 mb-6">
-      25 de julio de 2026 &middot; Sevilla
+    <!-- Fecha del evento con fade-in -->
+    <p
+      class="text-sm sm:text-base uppercase tracking-[0.3em] text-velada-gold/70 mb-6"
+      style="animation: fade-in-up 0.8s ease-out both; animation-delay: 200ms;"
+    >
+      25 de julio de 2026 &middot; Estadio La Cartuja, Sevilla
     </p>
 
-    <!-- Título principal -->
-    <h1 class="font-display text-6xl sm:text-8xl md:text-9xl tracking-tight uppercase leading-none">
-      <span class="text-velada-gold">La Velada</span>
-      <span class="block text-white mt-2">VI</span>
+    <!-- Título con fade-in escalonado -->
+    <h1 class="font-display tracking-tight uppercase leading-none">
+      <span
+        class="block text-6xl sm:text-8xl md:text-9xl text-velada-gold"
+        style="animation: fade-in-up 0.8s ease-out both; animation-delay: 400ms;"
+      >
+        La Velada
+      </span>
+      <span
+        class="block text-7xl sm:text-9xl md:text-[10rem] text-white mt-2"
+        style="animation: scale-in 0.6s ease-out both; animation-delay: 700ms;"
+      >
+        VI
+      </span>
     </h1>
 
-    <p class="mt-6 text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto">
-      10 combates. 20 peleadores. El evento de boxeo y entretenimiento más grande de la historia.
-      Estadio de La Cartuja, Sevilla.
+    <p
+      class="mt-6 text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto"
+      style="animation: fade-in-up 0.8s ease-out both; animation-delay: 900ms;"
+    >
+      10 combates. 20 peleadores. El mayor evento de boxeo y entretenimiento de la historia.
     </p>
 
-    <!-- CTA Buttons -->
-    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+    <!-- CTAs con glow effect -->
+    <div
+      class="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
+      style="animation: fade-in-up 0.8s ease-out both; animation-delay: 1100ms;"
+    >
       <a
         href="#boxeadores"
-        class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-velada-gold text-velada-dark font-bold rounded-full hover:bg-velada-gold-light transition-colors duration-300"
+        class="glow-gold inline-flex items-center justify-center gap-2 px-8 py-3 bg-velada-gold text-velada-dark font-bold rounded-full hover:bg-velada-gold-light transition-colors duration-300"
       >
         Ver Boxeadores
       </a>
@@ -70,7 +87,10 @@
   </div>
 
   <!-- Flecha de scroll -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+  <div
+    class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
+    style="animation-delay: 1500ms;"
+  >
     <svg class="w-6 h-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
     </svg>

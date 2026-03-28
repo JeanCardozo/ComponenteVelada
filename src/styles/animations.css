@@ -1,0 +1,139 @@
+/**
+ * Animaciones CSS personalizadas.
+ *
+ * ¿POR QUÉ CSS Y NO JavaScript?
+ * Las animaciones CSS se ejecutan en el "compositor" del navegador,
+ * que es un hilo separado del JavaScript. Esto significa:
+ * - No bloquean el main thread (mejor TBT)
+ * - Se ejecutan a 60fps incluso en móviles
+ * - El navegador puede optimizarlas con GPU
+ *
+ * Si hicieras esto con JavaScript (setInterval cambiando estilos),
+ * bloquearías el main thread y el Lighthouse te penalizaría.
+ *
+ * PATRÓN DEL REPO OFICIAL:
+ * Usan animaciones CSS con delays escalonados (staggered):
+ * - Primer elemento: delay 0ms
+ * - Segundo elemento: delay 100ms
+ * - Tercer elemento: delay 200ms
+ * Esto crea un efecto "cascada" muy profesional.
+ */
+
+/* ═══════════════════════════════════════════════
+   ANIMACIONES DE ENTRADA
+   ═══════════════════════════════════════════════ */
+
+/* Fade in desde abajo — la más usada */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in desde la izquierda */
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade in desde la derecha */
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale in — para elementos que "aparecen" */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   ANIMACIONES DE EFECTO
+   ═══════════════════════════════════════════════ */
+
+/* Glow pulsante — para CTAs y badges importantes */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(212, 168, 83, 0.4);
+  }
+}
+
+/* Shimmer — efecto de brillo que recorre el elemento */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   CLASES UTILITARIAS
+   ═══════════════════════════════════════════════ */
+
+/* Animación al entrar en viewport — requiere IntersectionObserver */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delays escalonados para grids (stagger effect) */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+.stagger-7 { animation-delay: 350ms; }
+.stagger-8 { animation-delay: 400ms; }
+
+/* Glow pulsante para botones CTA */
+.glow-gold {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Shimmer effect para loading states */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 168, 83, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}

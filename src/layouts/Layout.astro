@@ -1,5 +1,28 @@
 ---
+/**
+ * Layout base con View Transitions.
+ *
+ * CONCEPTO NUEVO: View Transitions API
+ *
+ * Las View Transitions permiten animaciones fluidas ENTRE páginas.
+ * Cuando haces click en un FighterCard → la página se anima
+ * suavemente a la página de detalle del boxeador.
+ *
+ * <ClientRouter /> activa esto automáticamente:
+ * 1. El usuario hace click en un link
+ * 2. Astro captura el evento (no recarga la página completa)
+ * 3. Descarga el nuevo HTML en segundo plano
+ * 4. Anima la transición entre la página actual y la nueva
+ *
+ * Esto convierte tu web estática en algo que PARECE una SPA
+ * (Single Page Application), pero sin el peso de React Router.
+ *
+ * El repo oficial de midudev NO tiene View Transitions.
+ * Esto es un diferenciador para tu portfolio.
+ */
+
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title?: string;
@@ -44,6 +67,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <!-- Fuentes self-hosted via @fontsource (no necesitamos CDN externo) -->
     <meta name="generator" content={Astro.generator} />
+
+    <!--
+      View Transitions — convierte la web en una experiencia tipo app.
+      Astro intercepta los clicks en links y anima las transiciones.
+      Fallback automático para navegadores que no lo soporten.
+    -->
+    <ClientRouter />
   </head>
   <body class="bg-zinc-950 text-white min-h-screen antialiased">
     <slot />
