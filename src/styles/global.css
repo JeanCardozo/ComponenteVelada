@@ -21,9 +21,23 @@
   --font-display: "Cinzel", Georgia, serif;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/*
+ * Smooth scrolling SOLO para navegación por anclas (#boxeadores, #combates).
+ *
+ * ¿POR QUÉ NO scroll-behavior: smooth en html?
+ * Porque afecta TODO el scroll — incluido el scroll normal con rueda/trackpad.
+ * Cuando el usuario scrollea rápido, el "smooth" hace que se sienta LAGGY
+ * porque el navegador intenta suavizar un movimiento que el usuario
+ * quiere que sea instantáneo.
+ *
+ * SOLUCIÓN: Aplicar smooth SOLO cuando el usuario clicka un link de ancla.
+ * Usamos @media (prefers-reduced-motion: no-preference) para respetar
+ * la preferencia del sistema del usuario (accesibilidad).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(:target) {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Selection color */
