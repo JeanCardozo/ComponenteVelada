@@ -1,0 +1,46 @@
+---
+/**
+ * Sección de Boxeadores — Grid responsive con FighterCards.
+ *
+ * CONCEPTO: Responsive Grid con Tailwind
+ *
+ * grid-cols-1 → 1 columna en móvil (< 640px)
+ * sm:grid-cols-2 → 2 columnas en tablet pequeña (≥ 640px)
+ * lg:grid-cols-3 → 3 columnas en tablet grande (≥ 1024px)
+ * xl:grid-cols-4 → 4 columnas en desktop (≥ 1280px)
+ *
+ * Tailwind usa "mobile-first": defines el caso base (móvil)
+ * y luego añades breakpoints para pantallas más grandes.
+ *
+ * ¿Por qué no 5 columnas? Porque con 20 boxeadores:
+ * - 4 columnas = 5 filas (se ve lleno pero no abrumador)
+ * - 5 columnas = 4 filas (las tarjetas serían demasiado pequeñas)
+ */
+
+import FighterCard from "@components/astro/FighterCard.astro";
+import { getAllFighters } from "@lib/fighters";
+
+const fighters = getAllFighters();
+---
+
+<section id="boxeadores" class="py-24 px-4">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="font-display text-4xl sm:text-5xl text-velada-gold text-center uppercase mb-4">
+      Los Boxeadores
+    </h2>
+    <p class="text-center text-zinc-500 mb-12 max-w-xl mx-auto">
+      20 peleadores. 10 combates. Conoce a cada uno de los protagonistas de La Velada VI.
+    </p>
+
+    <!--
+      Aquí está la magia de la arquitectura data-driven:
+      UN componente (FighterCard) + UN .map() = 20 tarjetas.
+      Si confirman un boxeador nuevo, solo modificas fighters.ts.
+    -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {fighters.map((fighter) => (
+        <FighterCard fighter={fighter} />
+      ))}
+    </div>
+  </div>
+</section>

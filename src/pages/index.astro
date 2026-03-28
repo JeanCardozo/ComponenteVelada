@@ -1,40 +1,55 @@
 ---
-import Layout from "../layouts/Layout.astro";
+/**
+ * Página principal — El orquestador.
+ *
+ * CONCEPTO: Composición de secciones.
+ *
+ * Fíjate qué limpio queda este archivo. Cada sección es un componente
+ * independiente que se importa y se coloca en orden.
+ *
+ * Si mañana quieres cambiar el orden (poner Combates antes que Boxeadores),
+ * solo mueves una línea. Si quieres añadir una sección de Sponsors,
+ * importas y la colocas donde quieras.
+ *
+ * El repo oficial hace EXACTAMENTE esto en su index.astro:
+ * importa Header, Hero, Countdown, Sponsors, etc. y los compone.
+ *
+ * NOTA sobre el Countdown:
+ * Se importa directamente aquí (no en una sección separada) porque
+ * va dentro del Hero. Se usa client:visible para que solo cargue JS
+ * cuando el usuario ve la página (que es inmediato porque está arriba).
+ */
+
+import Layout from "@/layouts/Layout.astro";
+import Header from "@components/astro/Header.astro";
+import Footer from "@components/astro/Footer.astro";
+import Hero from "@sections/Hero.astro";
+import Fighters from "@sections/Fighters.astro";
+import Combats from "@sections/Combats.astro";
+import Voting from "@sections/Voting.astro";
+import Countdown from "@components/react/Countdown";
 ---
 
 <Layout>
-  <main class="relative">
-    <!-- Hero Section -->
-    <section
-      class="flex flex-col items-center justify-center min-h-screen px-4 text-center"
-    >
-      <h1
-        class="font-display text-6xl sm:text-8xl md:text-9xl tracking-tight text-velada-gold uppercase"
-      >
-        La Velada
-        <span class="block text-white">VI</span>
-      </h1>
-      <p class="mt-6 text-lg sm:text-xl text-zinc-400 max-w-2xl">
-        El mayor evento de boxeo y entretenimiento. Pronto más información.
-      </p>
-      <div class="mt-10">
-        <a
-          href="#info"
-          class="inline-flex items-center gap-2 px-8 py-3 bg-velada-gold text-velada-dark font-bold rounded-full hover:bg-velada-gold-light transition-colors duration-300"
-        >
-          Descubre más
-        </a>
+  <Header />
+
+  <main>
+    <Hero />
+
+    <!-- Countdown — Isla React con client:visible -->
+    <section class="py-12 px-4 -mt-20 relative z-10">
+      <div class="max-w-2xl mx-auto">
+        <p class="text-center text-sm uppercase tracking-wider text-zinc-500 mb-6">
+          Faltan
+        </p>
+        <Countdown client:visible targetDate="2026-07-25T20:00:00+02:00" />
       </div>
     </section>
 
-    <!-- Info Section placeholder -->
-    <section id="info" class="py-24 px-4 max-w-6xl mx-auto">
-      <h2 class="font-display text-4xl sm:text-5xl text-velada-gold text-center uppercase">
-        Próximamente
-      </h2>
-      <p class="mt-4 text-zinc-400 text-center max-w-xl mx-auto">
-        Combates, artistas, fecha y lugar. Todo será revelado pronto.
-      </p>
-    </section>
+    <Fighters />
+    <Combats />
+    <Voting />
   </main>
+
+  <Footer />
 </Layout>

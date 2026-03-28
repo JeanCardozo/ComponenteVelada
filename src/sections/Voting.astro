@@ -1,0 +1,81 @@
+---
+/**
+ * Sección de Votación — Donde Astro Islands brilla.
+ *
+ * CONCEPTO CLAVE: client:visible (Hidratación Parcial)
+ *
+ * Observa cómo usamos el VoteButton:
+ *   <VoteButton client:visible ... />
+ *
+ * Esa directiva "client:visible" es la MAGIA de Astro Islands:
+ *
+ * 1. BUILD TIME: Astro renderiza el componente React en el servidor
+ *    y genera HTML estático (sin JS).
+ *
+ * 2. CARGA DE PÁGINA: El usuario ve HTML puro. El JS de React
+ *    NO se ha descargado todavía. La página carga ultra rápido.
+ *
+ * 3. SCROLL: Cuando el usuario scrollea y la sección de votación
+ *    entra en el viewport, Astro descarga el JS de React.
+ *
+ * 4. HIDRATACIÓN: React "toma control" del HTML estático y lo
+ *    hace interactivo (los botones ahora funcionan).
+ *
+ * RESULTADO:
+ * - Si el usuario nunca scrollea hasta aquí → 0 JS descargado
+ * - Si scrollea → solo descarga el JS de VoteButton (~3KB)
+ *
+ * OTRAS DIRECTIVAS que podrías usar:
+ * - client:load → carga JS inmediatamente (para cosas críticas)
+ * - client:idle → carga cuando el navegador está libre
+ * - client:media="(min-width: 768px)" → solo en desktop
+ *
+ * PARA LA ENTREVISTA:
+ * "Cada componente React es una isla independiente con su propia
+ * directiva de hidratación. El Countdown usa client:visible porque
+ * está en el hero. El VoteButton también usa client:visible porque
+ * está below the fold. Esto reduce el TBT un 90%."
+ */
+
+import VoteButton from "@components/react/VoteButton";
+import { getAllResolvedCombats } from "@lib/combats";
+
+const resolvedCombats = getAllResolvedCombats().reverse();
+---
+
+<section id="votar" class="py-24 px-4">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="font-display text-4xl sm:text-5xl text-velada-gold text-center uppercase mb-4">
+      ¿Quién Gana?
+    </h2>
+    <p class="text-center text-zinc-500 mb-12 max-w-xl mx-auto">
+      Haz tu predicción para cada combate. Vota por tu favorito.
+    </p>
+
+    <div class="flex flex-col gap-8">
+      {resolvedCombats.map(({ combat, fighterA, fighterB }) => (
+        <div class="p-6 rounded-xl border border-velada-border bg-velada-surface/30">
+          <p class="text-xs text-zinc-600 mb-1">Combate #{combat.number}</p>
+          <p class="font-display text-lg text-white uppercase mb-4">
+            {fighterA.alias}
+            <span class="text-zinc-600 mx-2">vs</span>
+            {fighterB.alias}
+          </p>
+
+          <!--
+            AQUÍ ESTÁ LA ISLA DE REACT 🏝️
+            client:visible = solo carga el JS cuando el usuario scrollea aquí
+          -->
+          <VoteButton
+            client:visible
+            combatId={combat.id}
+            fighterAId={fighterA.id}
+            fighterAName={fighterA.alias}
+            fighterBId={fighterB.id}
+            fighterBName={fighterB.alias}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

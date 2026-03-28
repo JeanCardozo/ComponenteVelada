@@ -1,0 +1,117 @@
+---
+/**
+ * CombatCard — Tarjeta de combate "VS".
+ *
+ * Muestra dos boxeadores enfrentados con un "VS" en el centro.
+ * Este patrón es el mismo del repo oficial (CombatVersus.astro).
+ *
+ * CONCEPTO: Recibir datos ya "resueltos"
+ * Este componente recibe los objetos Fighter completos, no IDs.
+ * La resolución de IDs → objetos ya la hizo la sección (Combats.astro)
+ * usando la función resolveCombat() del lib/.
+ *
+ * ¿Por qué no resolver aquí dentro?
+ * Porque un componente debería ser "tonto" — recibe datos y los muestra.
+ * La lógica de acceso a datos pertenece a la sección o al lib/.
+ * Esto se llama "Presentational Component" y es un patrón de React
+ * que también aplica en Astro.
+ */
+
+import type { Fighter, Combat, CombatCategory } from "@types/index";
+
+interface Props {
+  combat: Combat;
+  fighterA: Fighter;
+  fighterB: Fighter;
+}
+
+const { combat, fighterA, fighterB } = Astro.props;
+
+// Estilo especial para el main event
+const isMainEvent = combat.category === "main-event";
+const isCoMain = combat.category === "co-main-event";
+
+const borderClass = isMainEvent
+  ? "border-velada-gold/50"
+  : isCoMain
+    ? "border-velada-gold/25"
+    : "border-velada-border";
+
+const flags: Record<string, string> = {
+  ES: "\u{1F1EA}\u{1F1F8}",
+  AR: "\u{1F1E6}\u{1F1F7}",
+  MX: "\u{1F1F2}\u{1F1FD}",
+  CO: "\u{1F1E8}\u{1F1F4}",
+  SV: "\u{1F1F8}\u{1F1FB}",
+};
+---
+
+<article class:list={[
+  "relative rounded-xl border bg-velada-surface/50 p-6 transition-all duration-300 hover:bg-velada-surface",
+  borderClass,
+]}>
+  <!-- Badge de categoría -->
+  {(isMainEvent || isCoMain) && (
+    <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+      <span class:list={[
+        "px-3 py-1 text-xs font-bold uppercase rounded-full",
+        isMainEvent ? "bg-velada-gold text-velada-dark" : "bg-velada-gold/20 text-velada-gold",
+      ]}>
+        {isMainEvent ? "Main Event" : "Co-Main Event"}
+      </span>
+    </div>
+  )}
+
+  <!-- Combate número -->
+  <p class="text-xs text-zinc-600 text-center mb-4">
+    Combate #{combat.number}
+  </p>
+
+  <!-- Fighter A vs Fighter B -->
+  <div class="flex items-center justify-between gap-4">
+    <!-- Fighter A -->
+    <a href={`/fighter/${fighterA.id}`} class="flex-1 text-center group/a">
+      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-gradient-to-b from-velada-surface to-velada-dark border border-velada-border flex items-center justify-center mb-2 group-hover/a:border-velada-gold/30 transition-colors">
+        <span class="font-display text-xl text-velada-gold/30 group-hover/a:text-velada-gold/60 transition-colors">
+          {fighterA.alias.charAt(0)}
+        </span>
+      </div>
+      <p class="font-display text-sm sm:text-base text-white uppercase group-hover/a:text-velada-gold transition-colors truncate">
+        {fighterA.alias}
+      </p>
+      <p class="text-xs text-zinc-600">
+        {flags[fighterA.country] || fighterA.country}
+      </p>
+    </a>
+
+    <!-- VS badge -->
+    <div class="flex-shrink-0">
+      <span class:list={[
+        "font-display text-2xl sm:text-3xl uppercase",
+        isMainEvent ? "text-velada-gold" : "text-zinc-600",
+      ]}>
+        VS
+      </span>
+    </div>
+
+    <!-- Fighter B -->
+    <a href={`/fighter/${fighterB.id}`} class="flex-1 text-center group/b">
+      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-gradient-to-b from-velada-surface to-velada-dark border border-velada-border flex items-center justify-center mb-2 group-hover/b:border-velada-gold/30 transition-colors">
+        <span class="font-display text-xl text-velada-gold/30 group-hover/b:text-velada-gold/60 transition-colors">
+          {fighterB.alias.charAt(0)}
+        </span>
+      </div>
+      <p class="font-display text-sm sm:text-base text-white uppercase group-hover/b:text-velada-gold transition-colors truncate">
+        {fighterB.alias}
+      </p>
+      <p class="text-xs text-zinc-600">
+        {flags[fighterB.country] || fighterB.country}
+      </p>
+    </a>
+  </div>
+
+  <!-- Título del combate -->
+  <p class="text-xs text-zinc-500 text-center mt-4 truncate">
+    {combat.title}
+  </p>
+</article>

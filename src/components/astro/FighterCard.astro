@@ -1,0 +1,90 @@
+---
+/**
+ * FighterCard — Tarjeta de boxeador reutilizable.
+ *
+ * CONCEPTO CLAVE: Props tipadas en Astro
+ *
+ * En React haces: function Card({ fighter }: { fighter: Fighter })
+ * En Astro haces lo mismo pero con la interface Props:
+ *
+ *   interface Props { fighter: Fighter }
+ *   const { fighter } = Astro.props;
+ *
+ * Astro.props es el equivalente a los props de React.
+ * La diferencia: esto se ejecuta en BUILD TIME, no en el navegador.
+ * El usuario recibe HTML puro — cero JavaScript.
+ *
+ * EFECTO VISUAL: grayscale → color en hover
+ * Este efecto es icónico del repo oficial. La imagen se muestra
+ * en blanco y negro y al pasar el mouse se colorea.
+ * Todo con Tailwind CSS, sin JavaScript:
+ *   grayscale → imagen en B/N
+ *   group-hover:grayscale-0 → color al hacer hover en el card
+ *   group-hover:scale-105 → zoom sutil
+ *
+ * ¿Qué es "group"?
+ * Tailwind permite que un hijo reaccione al hover del padre.
+ * El padre tiene class="group" y el hijo usa "group-hover:".
+ * Es como decir: "cuando alguien hace hover en MI PADRE, yo cambio".
+ */
+
+import type { Fighter } from "@types/index";
+
+interface Props {
+  fighter: Fighter;
+}
+
+const { fighter } = Astro.props;
+
+// Banderas por código de país
+const flags: Record<string, string> = {
+  ES: "\u{1F1EA}\u{1F1F8}",
+  AR: "\u{1F1E6}\u{1F1F7}",
+  MX: "\u{1F1F2}\u{1F1FD}",
+  CO: "\u{1F1E8}\u{1F1F4}",
+  SV: "\u{1F1F8}\u{1F1FB}",
+};
+---
+
+<article class="group relative overflow-hidden rounded-xl border border-velada-border bg-velada-surface transition-all duration-500 hover:border-velada-gold/30 hover:shadow-[0_0_30px_rgba(212,168,83,0.15)]">
+  <!--
+    Imagen con efecto grayscale.
+    aspect-[3/4]: proporción de póster de boxeo (vertical).
+    Por ahora usamos un placeholder con gradiente e iniciales.
+  -->
+  <div class="aspect-[3/4] overflow-hidden bg-gradient-to-b from-velada-surface to-velada-dark">
+    <div class="w-full h-full flex items-center justify-center grayscale transition-all duration-500 group-hover:grayscale-0">
+      <span class="font-display text-7xl text-velada-gold/20 group-hover:text-velada-gold/40 transition-colors duration-500 select-none">
+        {fighter.alias.split(" ").map(w => w[0]).join("")}
+      </span>
+    </div>
+  </div>
+
+  <!-- Información del boxeador -->
+  <div class="p-4">
+    <div class="flex items-center justify-between">
+      <h3 class="font-display text-lg text-velada-gold uppercase truncate">
+        {fighter.alias}
+      </h3>
+      <span class="text-lg" title={fighter.country}>
+        {flags[fighter.country] || fighter.country}
+      </span>
+    </div>
+    <p class="text-sm text-zinc-500 truncate">{fighter.name}</p>
+  </div>
+
+  <!--
+    Link invisible que cubre toda la tarjeta.
+    ACCESIBILIDAD: aria-label describe el destino del enlace.
+    Esto es mejor que hacer onClick en el div porque:
+    1. Funciona sin JavaScript
+    2. El navegador sabe que es un enlace (SEO)
+    3. Los lectores de pantalla lo anuncian correctamente
+  -->
+  <a
+    href={`/fighter/${fighter.id}`}
+    class="absolute inset-0"
+    aria-label={`Ver perfil de ${fighter.alias}`}
+  >
+  </a>
+</article>

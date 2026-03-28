@@ -1,0 +1,39 @@
+---
+/**
+ * Sección de Combates — Muestra todos los enfrentamientos.
+ *
+ * CONCEPTO: Resolver datos en la sección, no en el componente.
+ *
+ * Aquí llamamos a getAllResolvedCombats() que convierte los IDs
+ * de fighters en objetos completos. Luego pasamos esos objetos
+ * resueltos al CombatCard.
+ *
+ * ¿Por qué .reverse()?
+ * Los combates están numerados del 1 al 10.
+ * En una cartelera de boxeo, el main event va ARRIBA.
+ * .reverse() muestra el combate 10 primero.
+ */
+
+import CombatCard from "@components/astro/CombatCard.astro";
+import { getAllResolvedCombats } from "@lib/combats";
+
+// Resolver combates (IDs → objetos Fighter completos) y mostrar main event primero
+const resolvedCombats = getAllResolvedCombats().reverse();
+---
+
+<section id="combates" class="py-24 px-4 bg-velada-dark">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="font-display text-4xl sm:text-5xl text-velada-gold text-center uppercase mb-4">
+      Los Combates
+    </h2>
+    <p class="text-center text-zinc-500 mb-12 max-w-xl mx-auto">
+      10 combates confirmados. Del combate de apertura al main event épico.
+    </p>
+
+    <div class="flex flex-col gap-6">
+      {resolvedCombats.map(({ combat, fighterA, fighterB }) => (
+        <CombatCard combat={combat} fighterA={fighterA} fighterB={fighterB} />
+      ))}
+    </div>
+  </div>
+</section>
