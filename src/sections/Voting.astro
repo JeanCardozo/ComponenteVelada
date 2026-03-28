@@ -63,11 +63,14 @@ const resolvedCombats = getAllResolvedCombats().reverse();
           </p>
 
           <!--
-            AQUÍ ESTÁ LA ISLA DE REACT 🏝️
-            client:visible = solo carga el JS cuando el usuario scrollea aquí
+            ISLA DE REACT — cambiado de client:visible a client:idle
+            client:idle usa requestIdleCallback: el JS se carga cuando
+            el browser no tiene nada más que hacer. Esto es MEJOR para
+            el TBT (Total Blocking Time) porque garantiza que el JS
+            de votación NUNCA compite con el rendering crítico.
           -->
           <VoteButton
-            client:visible
+            client:idle
             combatId={combat.id}
             fighterAId={fighterA.id}
             fighterAName={fighterA.alias}

@@ -31,9 +31,17 @@ import Countdown from "@components/react/Countdown";
 ---
 
 <Layout>
+  <!--
+    Skip-to-content link: mejora accesibilidad para usuarios de teclado.
+    Es invisible pero aparece al presionar Tab. Lighthouse lo valora.
+  -->
+  <a href="#boxeadores" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-velada-gold focus:text-velada-dark focus:rounded-lg focus:font-bold">
+    Saltar al contenido
+  </a>
+
   <Header />
 
-  <main>
+  <main aria-label="Contenido principal">
     <Hero />
 
     <!-- Countdown — Isla React con client:visible -->
