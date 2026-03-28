@@ -51,31 +51,41 @@ const fighters = getAllFighters();
   IntersectionObserver — Vanilla JS, NO React.
   Observa todos los elementos con clase .animate-on-scroll
   y les añade .is-visible cuando entran en el viewport.
-
-  threshold: 0.1 = el 10% del elemento debe ser visible.
-  rootMargin: "0px 0px -50px" = activa 50px ANTES de que sea visible
-  (para que la animación empiece un poco antes y se vea más natural).
 -->
 <script>
+  let currentObserver: IntersectionObserver | null = null;
+
   function initScrollAnimations() {
-    const observer = new IntersectionObserver(
+    // Limpiar observer anterior (evita duplicados en View Transitions)
+    currentObserver?.disconnect();
+
+    currentObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target); // Solo animar una vez
+            currentObserver?.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+      {
+        threshold: 0.05,
+        // rootMargin POSITIVO = detecta elementos 50px ANTES de que
+        // entren en el viewport. Cuando scrolleas rápido, los elementos
+        // empiezan a animarse antes de ser visibles → transición fluida.
+        rootMargin: "0px 0px 50px 0px",
+      }
     );
 
     document.querySelectorAll(".animate-on-scroll").forEach((el) => {
-      observer.observe(el);
+      // Si el elemento ya es visible (ej: scroll rápido, View Transition),
+      // marcarlo inmediatamente sin animación
+      if (el.getBoundingClientRect().top < window.innerHeight) {
+        el.classList.add("is-visible");
+      } else {
+        currentObserver?.observe(el);
+      }
     });
   }
-
-  // Ejecutar al cargar y después de cada View Transition
-  initScrollAnimations();
-  document.addEventListener("astro:after-swap", initScrollAnimations);
+  document.addEventListener("astro:page-load", initScrollAnimations);
 </script>
