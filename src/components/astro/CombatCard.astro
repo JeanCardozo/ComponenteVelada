@@ -28,8 +28,8 @@ interface Props {
 const { combat, fighterA, fighterB } = Astro.props;
 
 // Estilo especial para el main event
-const isMainEvent = combat.category === "main-event";
-const isCoMain = combat.category === "co-main-event";
+const isMainEvent = combat?.category === "main-event";
+const isCoMain = combat?.category === "co-main-event";
 
 const borderClass = isMainEvent
   ? "border-velada-gold/50"
